@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoutButton } from "./logout-button";
 
 type DashboardHeaderProps = {
   current: "home" | "candidates" | "reports";
@@ -37,6 +38,7 @@ export function DashboardHeader({
         >
           Reports
         </Link>
+        <LogoutButton />
       </nav>
     </header>
   );
