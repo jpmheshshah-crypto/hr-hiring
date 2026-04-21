@@ -1,13 +1,18 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const fallbackSupabaseUrl = "https://wwfttjsuvkqbopzjrzei.supabase.co";
+const fallbackSupabasePublishableKey =
+  "sb_publishable_o7MqjD3ICsI30AX0eb-ctQ_WTByV2jo";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? fallbackSupabaseUrl;
 const supabasePublishableKey =
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ??
+  fallbackSupabasePublishableKey;
 
 export function createSupabaseServerClient() {
   if (!supabaseUrl || !supabasePublishableKey) {
     throw new Error(
-      "Missing Supabase env vars. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY."
+      "Missing Supabase connection settings."
     );
   }
 
