@@ -58,6 +58,15 @@ type HiringRequestSummary = {
   created_at: string;
 };
 
+type BackendStats = {
+  hiringRequests: number;
+  candidates: number;
+  applications: number;
+  calls: number;
+  interviews: number;
+  emails: number;
+};
+
 const initialForm: HiringRequestForm = {
   roleTitle: "E-commerce Customer Care",
   headcountNeeded: "10",
@@ -73,13 +82,16 @@ const initialForm: HiringRequestForm = {
 export default function HomePage() {
   const [form, setForm] = useState<HiringRequestForm>(initialForm);
   const [recentRequests, setRecentRequests] = useState<HiringRequestSummary[]>([]);
+  const [backendStats, setBackendStats] = useState<BackendStats | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingRequests, setIsLoadingRequests] = useState(true);
+  const [isLoadingBackendStats, setIsLoadingBackendStats] = useState(true);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     void loadRecentRequests();
+    void loadBackendStats();
   }, []);
 
   async function loadRecentRequests() {
@@ -105,6 +117,56 @@ export default function HomePage() {
       setErrorMessage(message);
     } finally {
       setIsLoadingRequests(false);
+    }
+  }
+
+  async function getTableCount(tableName: string) {
+    const supabase = createSupabaseBrowserClient();
+    const { count, error } = await supabase
+      .from(tableName)
+      .select("id", { count: "exact", head: true });
+
+    if (error) {
+      throw error;
+    }
+
+    return count ?? 0;
+  }
+
+  async function loadBackendStats() {
+    setIsLoadingBackendStats(true);
+
+    try {
+      const [
+        hiringRequests,
+        candidates,
+        applications,
+        calls,
+        interviews,
+        emails
+      ] = await Promise.all([
+        getTableCount("hiring_requests"),
+        getTableCount("candidates"),
+        getTableCount("applications"),
+        getTableCount("screening_calls"),
+        getTableCount("interviews"),
+        getTableCount("email_logs")
+      ]);
+
+      setBackendStats({
+        hiringRequests,
+        candidates,
+        applications,
+        calls,
+        interviews,
+        emails
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Unable to load backend data.";
+      setErrorMessage(message);
+    } finally {
+      setIsLoadingBackendStats(false);
     }
   }
 
@@ -207,8 +269,8 @@ export default function HomePage() {
           </article>
           <article className="stat-card">
             <span className="mini-label">Automations</span>
-            <strong>Supabase + Airtable</strong>
-            <div className="muted">Core data and candidate sync</div>
+            <strong>{backendStats ? backendStats.candidates : "..."}</strong>
+            <div className="muted">Live candidates from Supabase</div>
           </article>
         </div>
       </section>
@@ -313,6 +375,37 @@ export default function HomePage() {
             <div className="card" style={{ padding: 18 }}>
               <span className="mini-label">Automation</span>
               <p>Supabase stores the core workflow, and the app syncs candidate records directly to Airtable through its own API route.</p>
+              {isLoadingBackendStats ? (
+                <div className="status-success">Loading backend data...</div>
+              ) : null}
+              {backendStats ? (
+                <div className="backend-data-grid">
+                  <div>
+                    <strong>{backendStats.hiringRequests}</strong>
+                    <span>Hiring requests</span>
+                  </div>
+                  <div>
+                    <strong>{backendStats.candidates}</strong>
+                    <span>Candidates</span>
+                  </div>
+                  <div>
+                    <strong>{backendStats.applications}</strong>
+                    <span>Applications</span>
+                  </div>
+                  <div>
+                    <strong>{backendStats.calls}</strong>
+                    <span>AI calls</span>
+                  </div>
+                  <div>
+                    <strong>{backendStats.interviews}</strong>
+                    <span>Interviews</span>
+                  </div>
+                  <div>
+                    <strong>{backendStats.emails}</strong>
+                    <span>Emails</span>
+                  </div>
+                </div>
+              ) : null}
             </div>
             <div className="card" style={{ padding: 18 }}>
               <span className="mini-label">Voice AI</span>

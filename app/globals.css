@@ -326,6 +326,30 @@ textarea {
   margin-top: 24px;
 }
 
+.backend-data-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.backend-data-grid div {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--surface-muted);
+}
+
+.backend-data-grid strong {
+  font-size: 1.35rem;
+}
+
+.backend-data-grid span {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
 .report-list {
   display: grid;
   gap: 12px;
