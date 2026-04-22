@@ -19,7 +19,7 @@ const workflowSteps = [
   {
     id: "03",
     title: "Screen every applicant",
-    text: "Leads are imported into Supabase and Airtable, then the recruiter team can screen, call, and qualify each candidate in one place."
+    text: "Candidate leads are imported into Supabase and Airtable, then recruiters can screen, call, and qualify each person in one place."
   },
   {
     id: "04",
@@ -32,8 +32,8 @@ const pipelineStages = [
   "New Request",
   "Draft Post",
   "Approved",
-  "Applied",
-  "Screened",
+  "New Lead",
+  "AI Screened",
   "Interview Scheduled",
   "Selected"
 ];
@@ -390,7 +390,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <strong>{backendStats.applications}</strong>
-                    <span>Applications</span>
+                    <span>Pipeline records</span>
                   </div>
                   <div>
                     <strong>{backendStats.calls}</strong>

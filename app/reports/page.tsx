@@ -14,9 +14,9 @@ const applicationStages = [
 ] as const;
 
 const stageLabels: Record<string, string> = {
-  applied: "Applied",
-  screened: "Screened",
-  shortlisted: "Shortlisted",
+  applied: "New Lead",
+  screened: "AI Screened",
+  shortlisted: "Qualified",
   interview_scheduled: "Interview Scheduled",
   selected: "Selected",
   rejected: "Rejected"
@@ -254,13 +254,13 @@ export default function ReportsPage() {
         <p>
           These numbers update from your live hiring requests, candidates, calls, and
           interviews. Use this page to understand how quickly roles are moving from
-          application to final decision.
+          new lead to final decision.
         </p>
         <div className="hero-stats">
           <article className="stat-card">
-            <span className="mini-label">Applications</span>
+            <span className="mini-label">Candidates</span>
             <strong>{metrics.totalApplications}</strong>
-            <div className="muted">All candidate applications</div>
+            <div className="muted">All people in the hiring pipeline</div>
           </article>
           <article className="stat-card">
             <span className="mini-label">Open headcount</span>
@@ -275,7 +275,7 @@ export default function ReportsPage() {
           <article className="stat-card">
             <span className="mini-label">Selection rate</span>
             <strong>{metrics.conversionRate}%</strong>
-            <div className="muted">Selected from total applications</div>
+            <div className="muted">Selected from total candidates</div>
           </article>
         </div>
       </section>
@@ -355,7 +355,7 @@ export default function ReportsPage() {
 
         <article className="panel">
           <div className="eyebrow">Activity</div>
-          <h2 className="section-title">Latest applications</h2>
+          <h2 className="section-title">Latest candidate activity</h2>
           <div className="report-list">
             {latestApplications.length === 0 ? (
               <div className="empty-state">No candidate activity yet.</div>

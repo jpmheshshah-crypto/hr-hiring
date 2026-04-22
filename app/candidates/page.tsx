@@ -107,9 +107,9 @@ const initialCandidateForm: CandidateForm = {
 };
 
 const stageTitles: Record<StageName, string> = {
-  applied: "Applied",
-  screened: "Screened",
-  shortlisted: "Shortlisted",
+  applied: "New Lead",
+  screened: "AI Screened",
+  shortlisted: "Qualified",
   interview_scheduled: "Interview Scheduled",
   selected: "Selected",
   rejected: "Rejected"
@@ -496,20 +496,20 @@ export default function CandidatesPage() {
       <DashboardHeader
         current="candidates"
         title="Track every candidate from lead to final decision."
-        description="This board pulls from Supabase so your recruiter can see screening progress, latest call notes, interview status, and the final hiring outcome in one place."
+        description="This board shows the complete candidate journey: imported leads, AI screening, interview scheduling, and final selected or rejected outcomes."
       />
 
       <section className="hero">
         <div className="eyebrow">Candidate Pipeline</div>
-        <h1>One board for applied, screened, shortlisted, interviewed, and selected candidates.</h1>
+        <h1>One board for new leads, AI screened candidates, qualified profiles, interviews, and final decisions.</h1>
         <p>
-          Next connection points after this screen are simple: Airtable can act
-          as an external intake table, while Supabase remains the main source of
-          truth for screening and stage updates.
+          Candidates can come from Airtable, job portals, walk-ins, or manual
+          entry. Recruiters do not need to think about backend application
+          records; they simply move people through the hiring journey.
         </p>
         <div className="hero-stats">
           <article className="stat-card">
-            <span className="mini-label">Total applications</span>
+            <span className="mini-label">Total candidates</span>
             <strong>{stats.total}</strong>
             <div className="muted">Across all hiring requests</div>
           </article>
@@ -551,8 +551,8 @@ export default function CandidatesPage() {
 
         <div className="muted">
           Use this when new candidate rows are added in Airtable. The app will create
-          the matching `candidates` and `applications` rows in Supabase and then mark
-          the Airtable row with the generated IDs.
+          the matching candidate profile and hiring pipeline record in Supabase, then
+          mark the Airtable row with the generated IDs.
         </div>
       </section>
 
@@ -642,8 +642,8 @@ export default function CandidatesPage() {
             <div>
               <div className="chip-row">
                 <div className="chip">Creates candidate row</div>
-                <div className="chip">Creates application row</div>
-                <div className="chip">Initial stage: applied</div>
+                <div className="chip">Creates pipeline record</div>
+                <div className="chip">Initial stage: new lead</div>
               </div>
               {formMessage ? <div className="status-success">{formMessage}</div> : null}
             </div>
@@ -672,7 +672,7 @@ export default function CandidatesPage() {
         <div className="section-header">
           <div>
             <div className="eyebrow">Live Board</div>
-            <h2 className="section-title">Application stages</h2>
+            <h2 className="section-title">Candidate journey</h2>
           </div>
           <div className="button-row">
             <button className="secondary-button" onClick={() => void loadApplications()} type="button">
@@ -687,8 +687,8 @@ export default function CandidatesPage() {
 
         {!isLoading && applications.length === 0 ? (
           <div className="empty-state">
-            No applications found yet. Once you insert candidates and applications
-            into Supabase, they will appear here automatically.
+            No candidates found yet. Once candidates are imported or added, they
+            will appear here automatically.
           </div>
         ) : null}
 

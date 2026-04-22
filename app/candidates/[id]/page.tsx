@@ -525,8 +525,8 @@ export default function CandidateDetailPage() {
     <main className="page-shell">
       <DashboardHeader
         current="candidates"
-        title="Candidate detail and recruiter actions."
-        description="Use this screen to maintain the recruiter summary, save AI call notes, and schedule interviews for a single application."
+        title="Candidate profile and recruiter actions."
+        description="Use this screen to maintain the candidate profile, review AI call notes, schedule interviews, and manage the next hiring step."
       />
 
       <div className="button-row" style={{ marginBottom: 18 }}>
@@ -542,7 +542,7 @@ export default function CandidateDetailPage() {
       {application ? (
         <>
           <section className="hero">
-            <div className="eyebrow">Application Detail</div>
+            <div className="eyebrow">Candidate Detail</div>
             <h1>{candidate?.full_name ?? "Candidate"}</h1>
             <p>
               {request?.role_title ?? "No role linked"} | {candidate?.city ?? "No city"} |{" "}
