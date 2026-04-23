@@ -500,13 +500,19 @@ export default function CandidatesPage() {
       />
 
       <section className="hero">
-        <div className="eyebrow">Candidate Pipeline</div>
-        <h1>One board for new leads, AI screened candidates, qualified profiles, interviews, and final decisions.</h1>
+        <div className="eyebrow">Advanced Client Demo</div>
+        <h1>Advanced BPO talent pipeline for recruiters, managers, and client demos.</h1>
         <p>
           Candidates can come from Airtable, job portals, walk-ins, or manual
           entry. Recruiters do not need to think about backend application
           records; they simply move people through the hiring journey.
         </p>
+        <div className="chip-row">
+          <div className="chip">Live candidate data</div>
+          <div className="chip">AI call summaries</div>
+          <div className="chip">Interview tracking</div>
+          <div className="chip">Final selection flow</div>
+        </div>
         <div className="hero-stats">
           <article className="stat-card">
             <span className="mini-label">Total candidates</span>
@@ -527,6 +533,32 @@ export default function CandidatesPage() {
             <span className="mini-label">Selected</span>
             <strong>{stats.selected}</strong>
             <div className="muted">Ready for final confirmation</div>
+          </article>
+        </div>
+      </section>
+
+      <section className="panel demo-panel">
+        <div className="section-header">
+          <div>
+            <div className="eyebrow">What Client Sees</div>
+            <h2 className="section-title">Why this page feels like an advanced hiring product</h2>
+          </div>
+        </div>
+        <div className="steps-grid" style={{ marginTop: 20 }}>
+          <article className="step-card">
+            <span>01</span>
+            <h3>Lead intake</h3>
+            <p>New candidates enter from Airtable, portals, or manual recruiter entry.</p>
+          </article>
+          <article className="step-card">
+            <span>02</span>
+            <h3>AI + recruiter screening</h3>
+            <p>Each person can be called by AI, reviewed by recruiter, and moved forward quickly.</p>
+          </article>
+          <article className="step-card">
+            <span>03</span>
+            <h3>Decision pipeline</h3>
+            <p>Interview, selection, rejection, and communication all happen from one board.</p>
           </article>
         </div>
       </section>
