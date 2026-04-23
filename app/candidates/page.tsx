@@ -502,11 +502,6 @@ export default function CandidatesPage() {
       <section className="hero">
         <div className="eyebrow">Advanced Client Demo</div>
         <h1>Advanced BPO talent pipeline for recruiters, managers, and client demos.</h1>
-        <p>
-          Candidates can come from Airtable, job portals, walk-ins, or manual
-          entry. Recruiters do not need to think about backend application
-          records; they simply move people through the hiring journey.
-        </p>
         <div className="chip-row">
           <div className="chip">Live candidate data</div>
           <div className="chip">AI call summaries</div>
@@ -581,11 +576,6 @@ export default function CandidatesPage() {
           </div>
         </div>
 
-        <div className="muted">
-          Use this when new candidate rows are added in Airtable. The app will create
-          the matching candidate profile and hiring pipeline record in Supabase, then
-          mark the Airtable row with the generated IDs.
-        </div>
       </section>
 
       <section className="panel">
