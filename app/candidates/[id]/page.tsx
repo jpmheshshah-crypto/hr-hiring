@@ -461,6 +461,13 @@ export default function CandidateDetailPage() {
         meetingLink: interviewForm.meetingLink || null
       });
 
+      const interviewEmailMessage =
+        emailResult.ok && emailResult.skipped && emailResult.message?.includes("Candidate email is missing")
+          ? "Interview entry added. Add candidate email in Candidate Profile, then schedule again to send the email."
+          : emailResult.ok
+            ? `Interview entry added. ${emailResult.message}`
+            : `Interview entry added, but email failed: ${emailResult.message}`;
+
       setInterviewForm({
         interviewerName: "",
         interviewerEmail: "",
@@ -468,13 +475,7 @@ export default function CandidateDetailPage() {
         meetingLink: "",
         feedback: ""
       });
-      setSuccessMessage(
-        emailResult.ok
-          ? emailResult.skipped
-            ? `Interview entry added. ${emailResult.message}`
-            : `Interview entry added. ${emailResult.message}`
-          : `Interview entry added, but email failed: ${emailResult.message}`
-      );
+      setSuccessMessage(interviewEmailMessage);
       await loadApplication();
     } catch (error) {
       const message =
