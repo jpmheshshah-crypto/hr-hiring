@@ -123,6 +123,22 @@ function normalizeApplication(row: CandidateRecordRow): CandidateRecord {
   };
 }
 
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (error && typeof error === "object") {
+    const message = "message" in error && typeof error.message === "string" ? error.message : null;
+    const details = "details" in error && typeof error.details === "string" ? error.details : null;
+    const hint = "hint" in error && typeof error.hint === "string" ? error.hint : null;
+
+    return [message, details, hint].filter(Boolean).join(" | ") || fallback;
+  }
+
+  return fallback;
+}
+
 export default function CandidatesPage() {
   const [applications, setApplications] = useState<CandidateRecord[]>([]);
   const [hiringRequests, setHiringRequests] = useState<HiringRequestOption[]>([]);
@@ -194,9 +210,7 @@ export default function CandidatesPage() {
       setApplications(normalizedApplications);
       setErrorMessage(null);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unable to load candidate pipeline.";
-      setErrorMessage(message);
+      setErrorMessage(getErrorMessage(error, "Unable to load candidate pipeline."));
     } finally {
       setIsLoading(false);
     }
@@ -222,9 +236,7 @@ export default function CandidatesPage() {
         hiringRequestId: current.hiringRequestId || options[0]?.id || ""
       }));
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unable to load hiring requests.";
-      setErrorMessage(message);
+      setErrorMessage(getErrorMessage(error, "Unable to load hiring requests."));
     }
   }
 
@@ -280,9 +292,7 @@ export default function CandidatesPage() {
 
       await loadApplications();
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unable to import Airtable candidates.";
-      setErrorMessage(message);
+      setErrorMessage(getErrorMessage(error, "Unable to import Airtable candidates."));
     } finally {
       setIsImportingFromAirtable(false);
     }
@@ -305,17 +315,27 @@ export default function CandidatesPage() {
       }
 
       const supabase = createSupabaseBrowserClient();
-      const totalExperience = candidateForm.totalExperience
-        ? Number.parseFloat(candidateForm.totalExperience)
+      const fullName = candidateForm.fullName.trim();
+      const phone = candidateForm.phone.trim();
+      const email = candidateForm.email.trim();
+      const city = candidateForm.city.trim();
+      const fitSummary = candidateForm.fitSummary.trim();
+      const totalExperienceValue = candidateForm.totalExperience.trim();
+      const totalExperience = totalExperienceValue
+        ? Number.parseFloat(totalExperienceValue)
         : null;
+
+      if (totalExperienceValue && !Number.isFinite(totalExperience)) {
+        throw new Error("Experience in years must be a valid number.");
+      }
 
       const { data: candidate, error: candidateError } = await supabase
         .from("candidates")
         .insert({
-          full_name: candidateForm.fullName,
-          phone: candidateForm.phone,
-          email: candidateForm.email || null,
-          city: candidateForm.city || null,
+          full_name: fullName,
+          phone,
+          email: email || null,
+          city: city || null,
           total_experience: totalExperience,
           english_level: candidateForm.englishLevel || null,
           source: candidateForm.source || null
@@ -333,7 +353,7 @@ export default function CandidatesPage() {
           candidate_id: candidate.id,
           hiring_request_id: candidateForm.hiringRequestId,
           application_status: "applied",
-          fit_summary: candidateForm.fitSummary || null
+          fit_summary: fitSummary || null
         })
         .select("id")
         .single();
@@ -349,14 +369,14 @@ export default function CandidatesPage() {
         candidateId: candidate.id,
         applicationId: application.id,
         hiringRequestId: candidateForm.hiringRequestId,
-        candidateName: candidateForm.fullName,
-        phone: candidateForm.phone,
-        email: candidateForm.email || null,
-        city: candidateForm.city || null,
+        candidateName: fullName,
+        phone,
+        email: email || null,
+        city: city || null,
         totalExperience,
         englishLevel: candidateForm.englishLevel || null,
         source: candidateForm.source || null,
-        fitSummary: candidateForm.fitSummary || null,
+        fitSummary: fitSummary || null,
         roleTitle: selectedRequest?.role_title ?? null
       });
 
@@ -373,9 +393,7 @@ export default function CandidatesPage() {
       );
       await loadApplications();
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unable to create candidate.";
-      setErrorMessage(message);
+      setErrorMessage(getErrorMessage(error, "Unable to create candidate."));
     } finally {
       setIsSavingCandidate(false);
     }
@@ -454,9 +472,7 @@ export default function CandidatesPage() {
 
       await loadApplications();
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unable to update candidate stage.";
-      setErrorMessage(message);
+      setErrorMessage(getErrorMessage(error, "Unable to update candidate stage."));
     } finally {
       setUpdatingApplicationId(null);
     }
@@ -595,11 +611,11 @@ export default function CandidatesPage() {
             </div>
             <div className="field">
               <label htmlFor="phone">Phone</label>
-              <input id="phone" value={candidateForm.phone} onChange={handleInputChange} />
+              <input id="phone" type="tel" value={candidateForm.phone} onChange={handleInputChange} />
             </div>
             <div className="field">
               <label htmlFor="email">Email</label>
-              <input id="email" value={candidateForm.email} onChange={handleInputChange} />
+              <input id="email" type="email" value={candidateForm.email} onChange={handleInputChange} />
             </div>
             <div className="field">
               <label htmlFor="city">City</label>
@@ -609,6 +625,9 @@ export default function CandidatesPage() {
               <label htmlFor="totalExperience">Experience in years</label>
               <input
                 id="totalExperience"
+                type="number"
+                min="0"
+                step="0.1"
                 value={candidateForm.totalExperience}
                 onChange={handleInputChange}
               />
